@@ -1429,9 +1429,9 @@ function hidePlayMenu() {
 /* difficulty: scales AI pace and how hard they rubber-band */
 const DIFFS = {
   /* floor = the slowest they'll ever run relative to the player's current speed */
-  easy:   { label: 'Easy',   mult: 1.30, catch: 1.14, ease: 1.00, floor: 1.00, late: .26, sloppy: .24, off: .12 },
-  medium: { label: 'Medium', mult: 1.42, catch: 1.18, ease: 1.02, floor: 1.00, late: .18, sloppy: .17, off: .07 },
-  hard:   { label: 'Hard',   mult: 1.55, catch: 1.22, ease: 1.06, floor: 1.06, late: .11, sloppy: .11, off: .03 },
+  easy:   { label: 'Easy',   mult: 1.23, catch: 1.05, ease: 1.00, floor: 0.00, late: .26, sloppy: .24, off: .12 },
+  medium: { label: 'Medium', mult: 1.33, catch: 1.08, ease: 1.02, floor: 0.75, late: .18, sloppy: .17, off: .07 },
+  hard:   { label: 'Hard',   mult: 1.36, catch: 1.11, ease: 1.06, floor: 0.82, late: .11, sloppy: .11, off: .03 },
 };
 let difficulty = 'medium';
 
@@ -1441,14 +1441,14 @@ let difficulty = 'medium';
    and downforce, a 6-speed automatic box with a power curve, ABS brakes */
 const G = 9.81;
 const VEHICLE = {
-  m: 1150, a: 1.20, b: 1.40, L: 2.60, h: 0.48, I: 1700,   // mass, CG→front/rear axle, wheelbase, CG height, yaw inertia
+  m: 1150, a: 1.45, b: 1.15, L: 2.60, h: 0.38, I: 1700,   // mass, CG→front/rear axle (44/56 split), wheelbase, CG height, yaw inertia
   mu: 1.55, muGrass: 0.62,                                  // racing slicks on tarmac / grass
   B: 8.5, C: 1.65,                                          // tyre curve: stiffness and shape (peak near 9° of slip)
   power: 300000, brake: 15500, reverse: 4200,               // W, N, N
   drag: 1.4, roll: 14, rollGrass: 190, downforce: 3.6,      // F = drag·v² + roll·v ; Fz += downforce·v²
   maxSteer: 0.55, steerFade: 12,                            // road-wheel lock (rad), and how fast it narrows with speed
   gears: [15, 23, 31, 39, 47, 57],                          // road speed (m/s) at the 8000 rpm limiter, per gear
-  tcOn: 0.85, tcOff: 0.92,                                  // share of rear grip the engine may use
+  tcOn: 0.85, tcOff: 0.70,                                // share of rear grip the engine may use
 };
 /* assists: traction control, stability control and a gentler steering rack */
 let assistsOn = true;
@@ -2412,7 +2412,7 @@ function updatePadMenu() {
 
 function frame(now) {
   requestAnimationFrame(frame);
-  const dt = Math.min(0.05, (now - last) / 1000);
+  const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
   last = now;
 
   if (paused) {                      // frozen: keep drawing, take controller input for the menu
